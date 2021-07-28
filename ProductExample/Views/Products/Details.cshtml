@@ -1,0 +1,90 @@
+﻿@model ProductExample.Models.Product
+
+@{
+    ViewBag.Title = "Detalles";
+    var selectItems = new SelectListItem[Model.ColorPrices.Count];
+    int i = 0;
+    var selectedColor = new ProductExample.Models.ColorPrice();
+    if (ViewBag.ColorId == 0)
+    {
+        foreach (var item in Model.ColorPrices)
+        {
+            if (i == 0)
+            {
+                selectItems[i] = new SelectListItem { Text = item.ColorName, Value = Convert.ToString(item.Id), Selected = true };
+                selectedColor = item;
+            }
+            else
+            {
+                selectItems[i] = new SelectListItem { Text = item.ColorName, Value = Convert.ToString(item.Id) };
+            }
+            i++;
+        }
+    }
+    else
+    {
+        foreach (var item in Model.ColorPrices)
+        {
+            if (ViewBag.ColorId == item.Id)
+            {
+                selectItems[i] = new SelectListItem { Text = item.ColorName, Value = Convert.ToString(item.Id), Selected = true };
+                selectedColor = item;
+            }
+            else
+            {
+                selectItems[i] = new SelectListItem { Text = item.ColorName, Value = Convert.ToString(item.Id) };
+            }
+            i++;
+        }
+    }
+
+}
+
+<h2>Detalles</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+
+        <dt>
+            Colores
+        </dt>
+
+        <dd>
+            @Html.DropDownList("color", selectItems, new { Class = "ddlStyle", onchange = "SelectedIndexChanged(this.value)" })
+        </dd>
+
+        <dt>
+            Precio
+        </dt>
+
+        <dd>
+            @selectedColor.Price.ToString()
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Editar", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Volver", "Index")
+</p>
+<script>
+    function SelectedIndexChanged(val){
+        window.location.href = "/Products/Details/" + @Model.Id + "?colorId=" + val;
+    }
+</script>
